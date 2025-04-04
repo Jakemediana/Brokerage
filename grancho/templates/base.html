@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link href="{% static 'css/grancho.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-DQvkBjpPgn7RC31MCQoOeC9TI2kdqa4+BSgNMNj8v77fdC77Kj5zpWFTJaaAoMbC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js" integrity="sha384-YUe2LzesAfftltw+PEaao2tjU/QATaW/rOitAq67e0CT0Zi2VVRL0oC4+gAaeBKu" crossorigin="anonymous"></script>
+    <title>Grancho Customs Brokerage</title>
+</head>
+<body>
+{% if request.user.is_authenticated %}
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg p-3">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/home">Grancho Customs Brokerage</a>
+        <div class=" collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link mx-2" href="#">Entry</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link mx-2" href="#">Manage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link mx-2" href="/logout">Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
+<div class="content">
+{% block content %}
+{% endblock content %}
+</div>
+</body>
+</html>

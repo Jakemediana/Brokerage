@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.content{
+    background-image: url('/static/img/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 90vh;
+}
+</style>
+<div class="container-fluid">
+</div>
+
+{% if message %}
+<script>
+    $(document).ready(function(){
+    $('#notifModal #message').text('{{ message }}');
+    $('#notifModal').modal('show');
+});
+{% endif %}
+</script>
+
+{% include 'modal.html' %}
+{% endblock content %}

@@ -1,0 +1,39 @@
+<style>
+/* Modal style */
+.modal-header{
+    background: deepskyblue;
+}
+.modal-title{
+    color: white;
+    font-weight: bolder;
+    text-shadow: -2px 0 black, 0 2px black, 1px 0 black, 0 -1px black;
+}
+.close{
+    background-color: deepskyblue;
+    color: white;
+}
+.close:hover{
+    background-color: deepskyblue;
+    color: black;
+}
+#message{
+    font-weight: bolder;
+}
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="notifModal" tabindex="-1" role="dialog" aria-labelledby="notifModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="notifModalLabel">GRANCHO CUSTOMS BROKERAGE</h5>
+      </div>
+      <div class="modal-body">
+        <p id="message"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn close" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
