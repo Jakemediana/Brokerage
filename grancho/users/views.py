@@ -34,3 +34,6 @@ def home(request):
     context = {}
     context["message"] = "Welcome " + request.user.first_name + " " + request.user.last_name + "!"
     return render(request, "home.html", context)
+
+def table_view(request):
+    return render(request, 'table.html')

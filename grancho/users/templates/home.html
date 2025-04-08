@@ -2,7 +2,7 @@
 
 {% block content %}
 <style>
-.content{
+.content {
     background-image: url('/static/img/bg.jpg');
     background-size: cover;
     background-position: center;
@@ -10,17 +10,21 @@
     min-height: 90vh;
 }
 </style>
-<div class="container-fluid">
+
+<div class="content">
+    <div class="container-fluid">
+        <!-- Your page content goes here -->
+    </div>
 </div>
 
 {% if message %}
 <script>
-    $(document).ready(function(){
-    $('#notifModal #message').text('{{ message }}');
-    $('#notifModal').modal('show');
-});
-{% endif %}
+    $(document).ready(function() {
+        $('#notifModal #message').text('{{ message }}');
+        $('#notifModal').modal('show');
+    });
 </script>
+{% endif %}
 
 {% include 'modal.html' %}
 {% endblock content %}

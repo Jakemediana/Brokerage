@@ -1,6 +1,10 @@
 .content {
     min-height: 100vh;
     font-family: Arial, sans-serif;
+    background-image: url('/static/img/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 /* Navigation bar style */
@@ -73,4 +77,10 @@
 .login-form button:hover {
   background-color: deepskyblue;
   color: black;
+}
+.table-container{
+  transition: transform 0.3s ease-in-out;
+}
+.table-container:hover {
+  transform: scale(1.05); 
 }

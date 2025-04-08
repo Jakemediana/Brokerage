@@ -78,11 +78,11 @@ AUTH_USER_MODEL = 'users.User'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'grancho',
+        'NAME': 'gcbDB',
         'USER': 'postgres',
-        'PASSWORD': '#Minister123',
+        'PASSWORD': '2044',
         'HOST': 'localhost',  # Replace with your PostgreSQL server's address if necessary
-        'PORT': '',          # Leave empty to use the default PostgreSQL port (usually 5432)
+        'PORT': '5432',          # Leave empty to use the default PostgreSQL port (usually 5432)
     }
 }
 
