@@ -10,13 +10,12 @@
         background-position: center;
         background-attachment: fixed;
         display: flex;
-        flex-direction: column; /* Arrange items vertically */
-        justify-content: center;
+        flex-direction: column;
+        justify-content: flex-start; /* brings content to the top */
         align-items: center;
-        padding: 20px;
+        padding: 40px 20px 20px; /* optional: top padding increased */
     }
 
-    /* Navigation bar style */
     .navbar {
         background: deepskyblue;
     }
@@ -35,25 +34,26 @@
         color: white;
     }
 
-    .nav-item a:hover{
+    .nav-item a:hover {
         color: black;
     }
 
-    /* Table container style */
     .table-container {
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
         overflow-x: auto;
-        transition: transform 0.3s ease-in-out; /* Add transition for smooth zooming */
-        width: 90%; /* Adjust width as needed */
-        max-width: 1200px; /* Set a maximum width if desired */
-        margin-bottom: 15px; /* Add some space below the table */
+        overflow-y: auto; /* enables vertical scroll */
+        transition: transform 0.3s ease-in-out;
+        width: 100%;
+        max-width: 95vw;
+        max-height: 70vh; /* make container taller */
+        margin-bottom: 20px;
     }
 
     .table-container:hover {
-        transform: scale(1.02); /* Subtle zoom on hover */
+        transform: scale(1.02);
     }
 
     table {
@@ -72,21 +72,23 @@
         font-weight: bold;
     }
 
-    td input[type="text"] {
+    td input[type="text"], td select {
         width: 100%;
         padding: 6px;
         box-sizing: border-box;
         border: 1px solid #ccc;
         border-radius: 4px;
+        font-family: Arial, sans-serif;
     }
 
-    /* Button container style */
     .button-container {
         display: flex;
-        gap: 10px; /* Space between buttons */
+        gap: 10px;
+        justify-content: flex-start; /* align to the left */
+        width: 100%; /* take full width so it sticks to left edge */
+        margin-bottom: 15px; /* spacing from the table */
     }
 
-    /* Button styles */
     .button-container button {
         padding: 10px 15px;
         background-color: deepskyblue;
@@ -98,22 +100,57 @@
     }
 
     .button-container button:hover {
-        background-color: #008CBA; /* Darker shade of deepskyblue */
-        color: white;
+        background-color: #008CBA;
     }
 
-    /* Checkbox style for row selection */
     td.select-row {
         text-align: center;
     }
+
+    select.status-dropdown {
+        width: 130px;
+        padding: 6px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+        text-transform: lowercase;
+    }
+
+    .status-assessed { background-color: #f0f0f0; color: #333; }
+    .status-paid { background-color: #b6fcb6; color: #2c662d; }
+    .status-registered { background-color: #e0e0ff; color: #333399; }
+    .status-released { background-color: #167b5c; color: white; }
+    .status-selected { background-color: #d2e9ff; color: #004e8a; }
+    .status-status { background-color: #eeeeee; color: #444; }
+
+    select.selectivity-dropdown {
+        width: 100px;
+        padding: 6px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+
+    .selectivity-red { background-color: #ffe0e0; color: #cc0000; }
+    .selectivity-orange { background-color: #ffe8cc; color: #ff8c00; }
+    .selectivity-yellow { background-color: #fffacd; color: #b8860b; }
 </style>
 
+<div class="button-container">
+    <button onclick="addRow()">Add Row</button>
+    <button onclick="deleteSelectedRows()">Delete Selected</button>
+    <button type="submit">Save Data</button>
+</div>
 <div class="content">
     <div class="table-container">
         <table>
             <thead>
                 <tr>
-                    <th></th> <th>ANNUAL</th>
+                    <th></th>
+                    <th>ANNUAL</th>
                     <th>DATE OF ARRIVAL</th>
                     <th>DATE OF FILED</th>
                     <th>CONSIGNEE</th>
@@ -123,6 +160,7 @@
                     <th>BILL OF LADING</th>
                     <th>CONTAINER NO.</th>
                     <th>OWNER</th>
+                    <th>SELECTIVITY</th>
                     <th>TAXES</th>
                     <th>UPGRADED TAXES</th>
                     <th>STATUS</th>
@@ -151,9 +189,26 @@
                     <td><input type="text" name="bill_of_lading[]"></td>
                     <td><input type="text" name="container_no[]"></td>
                     <td><input type="text" name="owner[]"></td>
+                    <td>
+                        <select name="selectivity[]" class="selectivity-dropdown" onchange="updateSelectivityColor(this)">
+                            <option value="" disabled selected>--</option>
+                            <option value="red">red</option>
+                            <option value="orange">orange</option>
+                            <option value="yellow">yellow</option>
+                        </select>
+                    </td>
                     <td><input type="text" name="taxes[]"></td>
                     <td><input type="text" name="upgraded_taxes[]"></td>
-                    <td><input type="text" name="status[]"></td>
+                    <td>
+                        <select name="status[]" class="status-dropdown" onchange="updateStatusColor(this)">
+                            <option value="" disabled selected>--</option>
+                            <option value="assessed">assessed</option>
+                            <option value="paid">paid</option>
+                            <option value="registered">registered</option>
+                            <option value="released">released</option>
+                            <option value="selected">selected</option>
+                        </select>
+                    </td>
                     <td><input type="text" name="thc[]"></td>
                     <td><input type="text" name="condep[]"></td>
                     <td><input type="text" name="demurrage[]"></td>
@@ -168,11 +223,7 @@
             </tbody>
         </table>
     </div>
-    <div class="button-container">
-        <button onclick="addRow()">Add Row</button>
-        <button onclick="deleteSelectedRows()">Delete Selected</button>
-        <button type="submit">Save Data</button>
-    </div>
+    
 </div>
 
 {% if message %}
@@ -187,24 +238,71 @@
 {% include 'modal.html' %}
 
 <script>
+function updateStatusColor(selectElement) {
+    const value = selectElement.value.toLowerCase();
+    const allClasses = [
+        "status-assessed", "status-paid", "status-registered",
+        "status-released", "status-selected", "status-status"
+    ];
+    selectElement.classList.remove(...allClasses);
+    if (value) selectElement.classList.add(`status-${value}`);
+}
+
+function updateSelectivityColor(selectElement) {
+    const value = selectElement.value.toLowerCase();
+    const allClasses = [
+        "selectivity-red", "selectivity-orange", "selectivity-yellow"
+    ];
+    selectElement.classList.remove(...allClasses);
+    if (value) selectElement.classList.add(`selectivity-${value}`);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.status-dropdown').forEach(updateStatusColor);
+    document.querySelectorAll('.selectivity-dropdown').forEach(updateSelectivityColor);
+});
+
 function addRow() {
     const tbody = document.querySelector('table tbody');
     const newRow = tbody.insertRow();
-    newRow.insertCell().innerHTML = '<input type="checkbox" class="row-checkbox">'; // Checkbox cell
-    for (let i = 0; i < 23; i++) {
-        const newCell = newRow.insertCell();
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.name = Object.keys({
-            ANNUAL: '', DATE_OF_ARRIVAL: '', DATE_OF_FILED: '', CONSIGNEE: '',
-            'BROKER ENTRY NO.': '', VOLUME: '', STC: '', 'BILL OF LADING': '',
-            'CONTAINER NO.': '', OWNER: '', TAXES: '', 'UPGRADED TAXES': '',
-            STATUS: '', THC: '', CONDEP: '', DEMURRAGE: '', DETENTION: '',
-            'DO STATUS': '', 'DO VALIDITY': '', ARRASTRE: '', WHARFAGE: '',
-            SPOTCHECK: '', 'TOTAL STORAGE': ''
-        })[i] + '[]';
-        newCell.appendChild(input);
-    }
+    newRow.insertCell().innerHTML = '<input type="checkbox" class="row-checkbox">';
+
+    const fields = [
+        'annual', 'date_of_arrival', 'date_of_filed', 'consignee', 'broker_entry_no',
+        'volume', 'stc', 'bill_of_lading', 'container_no', 'owner',
+        'selectivity', 'taxes', 'upgraded_taxes', 'status', 'thc', 'condep',
+        'demurrage', 'detention', 'do_status', 'do_validity', 'arrastre',
+        'wharfage', 'spotcheck', 'total_storage'
+    ];
+
+    fields.forEach(field => {
+        const cell = newRow.insertCell();
+        if (field === 'selectivity') {
+            cell.innerHTML = `
+                <select name="selectivity[]" class="selectivity-dropdown" onchange="updateSelectivityColor(this)">
+                    <option value="" disabled selected>--</option>
+                    <option value="red">red</option>
+                    <option value="orange">orange</option>
+                    <option value="yellow">yellow</option>
+                </select>
+            `;
+            setTimeout(() => updateSelectivityColor(cell.querySelector('select')), 0);
+        } else if (field === 'status') {
+            cell.innerHTML = `
+                <select name="status[]" class="status-dropdown" onchange="updateStatusColor(this)">
+                    <option value="" disabled selected>--</option>
+                    <option value="assessed">assessed</option>
+                    <option value="paid">paid</option>
+                    <option value="registered">registered</option>
+                    <option value="released">released</option>
+                    <option value="selected">selected</option>
+                </select>
+            `;
+            setTimeout(() => updateStatusColor(cell.querySelector('select')), 0);
+        } else {
+            cell.innerHTML = `<input type="text" name="${field}[]" style="font-family: Arial, sans-serif;">`;
+        }
+    });
 }
 
 function deleteSelectedRows() {
@@ -216,5 +314,4 @@ function deleteSelectedRows() {
     });
 }
 </script>
-
 {% endblock content %}

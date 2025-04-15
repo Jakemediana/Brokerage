@@ -78,9 +78,20 @@
   background-color: deepskyblue;
   color: black;
 }
-.table-container{
-  transition: transform 0.3s ease-in-out;
+.table-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 1400px;
+    margin-bottom: 25px;
+    overflow-x: auto;
+    max-height: 600px; /* Optional: add vertical scroll if needed */
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
 }
+
 .table-container:hover {
-  transform: scale(1.05); 
+    transform: scale(1.05);
 }
