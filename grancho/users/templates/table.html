@@ -349,251 +349,256 @@
                     <td></td> <!-- total_storage column, left blank -->
                 </tr>
             </tfoot>
-        </table>
+        </table>                                                                                                                                                                                                                                                                                                                                                                                                                
     </div>
 </div>
 
 <script>
     function updateTotals() {
-    const arrastreFields = document.querySelectorAll('input[name="arrastre[]"]');
-    const wharfageFields = document.querySelectorAll('input[name="wharfage[]"]');
-    const spotcheckFields = document.querySelectorAll('input[name="spotcheck[]"]');
+        const arrastreFields = document.querySelectorAll('input[name="arrastre[]"]');
+        const wharfageFields = document.querySelectorAll('input[name="wharfage[]"]');
+        const spotcheckFields = document.querySelectorAll('input[name="spotcheck[]"]');
 
-    let arrastreTotal = 0, wharfageTotal = 0, spotcheckTotal = 0;
+        let arrastreTotal = 0, wharfageTotal = 0, spotcheckTotal = 0;
 
-    arrastreFields.forEach(input => {
-        const val = parseFloat(input.value);
-        if (!isNaN(val)) arrastreTotal += val;
-    });
+        arrastreFields.forEach(input => {
+            const val = parseFloat(input.value.replace(/,/g, ''));
+            if (!isNaN(val)) arrastreTotal += val;
+        });
 
-    wharfageFields.forEach(input => {
-        const val = parseFloat(input.value);
-        if (!isNaN(val)) wharfageTotal += val;
-    });
+        wharfageFields.forEach(input => {
+            const val = parseFloat(input.value.replace(/,/g, ''));
+            if (!isNaN(val)) wharfageTotal += val;
+        });
 
-    spotcheckFields.forEach(input => {
-        const val = parseFloat(input.value);
-        if (!isNaN(val)) spotcheckTotal += val;
-    });
+        spotcheckFields.forEach(input => {
+            const val = parseFloat(input.value.replace(/,/g, ''));
+            if (!isNaN(val)) spotcheckTotal += val;
+        });
 
-    document.getElementById('total-arrastre').value = arrastreTotal.toFixed(2);
-    document.getElementById('total-wharfage').value = wharfageTotal.toFixed(2);
-    document.getElementById('total-spotcheck').value = spotcheckTotal.toFixed(2);
-}
+        document.getElementById('total-arrastre').value = arrastreTotal.toLocaleString('en-PH', {
+            style: 'currency',
+            currency: 'PHP',
+            minimumFractionDigits: 2
+        });
 
-function calculateCharges(select) {
-    const row = select.closest('tr');
-    const arrastreInput = row.querySelector('.arrastre-field');
-    const wharfageInput = row.querySelector('[name="wharfage[]"]');
-    const spotcheckInput = row.querySelector('[name="spotcheck[]"]');
-    const selectivityDropdown = row.querySelector('.selectivity-dropdown');
-    
-    // Get the values from dropdowns
-    const volumeValue = select.value;
-    const selectivityValue = selectivityDropdown.value;
+        document.getElementById('total-wharfage').value = wharfageTotal.toLocaleString('en-PH', {
+            style: 'currency',
+            currency: 'PHP',
+            minimumFractionDigits: 2
+        });
 
-    let ARrate = 0;
-    let WArate = 0;
-    let spotcheckValue = 0;
-
-    // Extract the volume (count) and size (20 or 40) from the value
-    const match = volumeValue.match(/^(\d+)x(20|40)$/);
-
-    if (match) {
-        const count = parseInt(match[1]);
-        const size = match[2];
-
-        if (size === "40") {
-            ARrate = count * 3433.47;
-            WArate = count * 1731.79;
-            if (selectivityValue === "red" || selectivityValue === "orange") {
-                spotcheckValue = count * 3176.32;
-            }
-        } else if (size === "20") {
-            ARrate = count * 2055;
-            WArate = count * 1590.40;
-            if (selectivityValue === "red" || selectivityValue === "orange") {
-                spotcheckValue = count * 1096.25;
-            }
-        }
+        document.getElementById('total-spotcheck').value = spotcheckTotal.toLocaleString('en-PH', {
+            style: 'currency',
+            currency: 'PHP',
+            minimumFractionDigits: 2
+        });
     }
 
-    // Update the input fields with calculated values
-    arrastreInput.value = ARrate.toFixed(2);
-    wharfageInput.value = WArate.toFixed(2);
-    spotcheckInput.value = spotcheckValue.toFixed(2);
-
-    updateTotals();
-}
-
-
-
-function updateStatusColor(selectElement) {
-    const value = selectElement.value.toLowerCase();
-    const allClasses = [
-        "status-assessed", "status-paid", "status-registered",
-        "status-released", "status-selected", "status-status"
-    ];
-    selectElement.classList.remove(...allClasses);
-    if (value) selectElement.classList.add(`status-${value}`);
-}
-
-
-function updateSelectivityColor(selectElement) {
-    const value = selectElement.value.toLowerCase();
-    const allClasses = [
-        "selectivity-red", "selectivity-orange", "selectivity-yellow"
-    ];
-    selectElement.classList.remove(...allClasses);
-    if (value) selectElement.classList.add(`selectivity-${value}`);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('.status-dropdown').forEach(updateStatusColor);
-    document.querySelectorAll('.selectivity-dropdown').forEach(select => {
-        updateSelectivityColor(select);
-        // Trigger initial charge calculation if both volume and selectivity are set
+    function calculateCharges(select) {
         const row = select.closest('tr');
-        const volumeDropdown = row.querySelector('.volume-dropdown');
-        volumeDropdown.addEventListener('change', () => calculateCharges(volumeDropdown));
-        select.addEventListener('change', () => calculateCharges(volumeDropdown));
+        const arrastreInput = row.querySelector('.arrastre-field');
+        const wharfageInput = row.querySelector('[name="wharfage[]"]');
+        const spotcheckInput = row.querySelector('[name="spotcheck[]"]');
+        const selectivityDropdown = row.querySelector('.selectivity-dropdown');
 
-        if (volumeDropdown.value && select.value) {
-            calculateCharges(volumeDropdown);
+        const volumeValue = select.value;
+        const selectivityValue = selectivityDropdown.value;
+
+        let ARrate = 0;
+        let WArate = 0;
+        let spotcheckValue = 0;
+
+        const match = volumeValue.match(/^(\d+)x(20|40)$/);
+
+        if (match) {
+            const count = parseInt(match[1]);
+            const size = match[2];
+
+            if (size === "40") {
+                ARrate = count * 3433.47;
+                WArate = count * 1731.79;
+                if (selectivityValue === "red" || selectivityValue === "orange") {
+                    spotcheckValue = count * 3176.32;
+                }
+            } else if (size === "20") {
+                ARrate = count * 2055;
+                WArate = count * 1590.40;
+                if (selectivityValue === "red" || selectivityValue === "orange") {
+                    spotcheckValue = count * 1096.25;
+                }
+            }
         }
-    });
-    document.querySelectorAll('input[name="entry_no[]"]').forEach(input => {
-        input.addEventListener('blur', () => checkDuplicateOnBlur(input, "entry_no[]", "Duplicate Entry No. detected!"));
-    });
 
-    document.querySelectorAll('input[name="bill_of_lading[]"]').forEach(input => {
-        input.addEventListener('blur', () => checkDuplicateOnBlur(input, "bill_of_lading[]", "Duplicate Bill of Lading detected!"));
-    });
+        arrastreInput.value = ARrate.toLocaleString('en-PH', { minimumFractionDigits: 2 });
+        wharfageInput.value = WArate.toLocaleString('en-PH', { minimumFractionDigits: 2 });
+        spotcheckInput.value = spotcheckValue.toLocaleString('en-PH', { minimumFractionDigits: 2 });
 
-});
-function addRow() {
-    const tbody = document.querySelector('table tbody');
-    const newRow = tbody.insertRow();
-    newRow.innerHTML = `
-        <td class="select-row"><input type="checkbox" class="row-checkbox"></td>
-        <td><input type="text" name="date_of_arrival[]"></td>
-        <td><input type="text" name="date_of_filed[]"></td>
-        <td><input type="text" name="consignee[]"></td>
-        <td><input type="text" name="broker[]"></td>
-        <td><input type="text" name="entry_no[]"></td>
-        <td>
-            <select name="volume[]" class="volume-dropdown" style="font-family: Arial, sans-serif;">
-                <option value="" disabled selected>--</option>
-                ${[...Array(40).keys()].map(i => `<option value="${i + 1}x40">${i + 1}x40</option>`).join('')}
-                ${[...Array(40).keys()].map(i => `<option value="${i + 1}x20">${i + 1}x20</option>`).join('')}
-            </select>
-        </td>
-        <td><input type="text" name="stc[]"></td>
-        <td><input type="text" name="bill_of_lading[]"></td>
-        <td><input type="text" name="container_no[]"></td>
-        <td><input type="text" name="owner[]"></td>
-        <td>
-            <select name="selectivity[]" class="selectivity-dropdown">
-                <option value="" disabled selected>--</option>
-                <option value="red">red</option>
-                <option value="orange">orange</option>
-                <option value="yellow">yellow</option>
-            </select>
-        </td>
-        <td><input type="text" name="taxes[]"></td>
-        <td><input type="text" name="upgraded_taxes[]"></td>
-        <td>
-            <select name="status[]" class="status-dropdown">
-                <option value="" disabled selected>--</option>
-                <option value="assessed">assessed</option>
-                <option value="paid">paid</option>
-                <option value="registered">registered</option>
-                <option value="released">released</option>
-                <option value="selected">selected</option>
-            </select>
-        </td>
-        <td><input type="text" name="thc[]"></td>
-        <td><input type="text" name="condep[]"></td>
-        <td><input type="text" name="demurrage[]"></td>
-        <td><input type="text" name="detention[]"></td>
-        <td><input type="text" name="do_status[]"></td>
-        <td><input type="text" name="do_validity[]"></td>
-        <td><input type="text" name="arrastre[]" class="arrastre-field" readonly></td>
-        <td><input type="text" name="wharfage[]" readonly></td>
-        <td><input type="text" name="spotcheck[]" readonly></td>
-        <td><input type="text" name="total_storage[]"></td>
-    `;
-
-    const volumeDropdown = newRow.querySelector('.volume-dropdown');
-    const selectivityDropdown = newRow.querySelector('.selectivity-dropdown');
-    const statusDropdown = newRow.querySelector('.status-dropdown');
-    const entryNoInput = newRow.querySelector('input[name="entry_no[]"]');
-    const billInput = newRow.querySelector('input[name="bill_of_lading[]"]');
-
-    entryNoInput.addEventListener('blur', () =>
-    checkDuplicateOnBlur(entryNoInput, "entry_no[]", "Duplicate Entry No. detected!"));
-
-    billInput.addEventListener('blur', () =>
-    checkDuplicateOnBlur(billInput, "bill_of_lading[]", "Duplicate Bill of Lading detected!"));
-    // Add change listeners
-    volumeDropdown.addEventListener('change', () => calculateCharges(volumeDropdown));
-    selectivityDropdown.addEventListener('change', () => {
-        updateSelectivityColor(selectivityDropdown);                    
-        calculateCharges(volumeDropdown); // Ensure charges update when selectivity changes
-    });
-    statusDropdown.addEventListener('change', () => updateStatusColor(statusDropdown));
-}
-
-function checkDuplicateOnBlur(input, nameAttr, alertMessage) {
-    const value = input.value.trim();
-    if (!value) return;
-
-    const inputs = document.querySelectorAll(`input[name="${nameAttr}"]`);
-    let isDuplicate = false;
-
-    inputs.forEach(otherInput => {
-        if (otherInput !== input && otherInput.value.trim() === value) {
-            isDuplicate = true;
-            otherInput.style.border = "2px solid red";
-            input.style.border = "2px solid red";
-        }
-    });
-
-    if (isDuplicate) {
-        alert(alertMessage);
-    } else {
-        input.style.border = "";
+        updateTotals();
     }
-}
 
+    function updateStatusColor(selectElement) {
+        const value = selectElement.value.toLowerCase();
+        const allClasses = [
+            "status-assessed", "status-paid", "status-registered",
+            "status-released", "status-selected", "status-status"
+        ];
+        selectElement.classList.remove(...allClasses);
+        if (value) selectElement.classList.add(`status-${value}`);
+    }
 
+    function updateSelectivityColor(selectElement) {
+        const value = selectElement.value.toLowerCase();
+        const allClasses = [
+            "selectivity-red", "selectivity-orange", "selectivity-yellow"
+        ];
+        selectElement.classList.remove(...allClasses);
+        if (value) selectElement.classList.add(`selectivity-${value}`);
+    }
 
-function setupLiveDuplicateChecks() {
-    document.querySelectorAll('input[name="entry_no[]"]').forEach(input => {
-        input.addEventListener('input', () => checkDuplicateLive("entry_no[]", "Duplicate Entry No."));
+    function checkDuplicateLive(nameAttr, alertMessage) {
+        const inputs = document.querySelectorAll(`input[name="${nameAttr}"]`);
+        const seen = new Map();
+
+        inputs.forEach(input => {
+            const value = input.value.trim();
+            input.style.border = ""; // reset
+        });
+
+        inputs.forEach(input => {
+            const value = input.value.trim();
+            if (!value) return;
+
+            if (seen.has(value)) {
+                const dupInput = seen.get(value);
+                input.style.border = "2px solid red";
+                dupInput.style.border = "2px solid red";
+
+                if (!input.dataset.alerted) {
+                    alert(alertMessage);
+                    input.dataset.alerted = true;
+                }
+            } else {
+                seen.set(value, input);
+                delete input.dataset.alerted;
+            }
+        });
+    }
+
+    function setupLiveDuplicateChecks() {
+        document.querySelectorAll('input[name="entry_no[]"]').forEach(input => {
+            input.addEventListener('input', () => checkDuplicateLive("entry_no[]", "Duplicate Entry No."));
+        });
+
+        document.querySelectorAll('input[name="bill_of_lading[]"]').forEach(input => {
+            input.addEventListener('input', () => checkDuplicateLive("bill_of_lading[]", "Duplicate Bill of Lading."));
+        });
+    }
+
+    function addRow() {
+        const tbody = document.querySelector('table tbody');
+        const newRow = tbody.insertRow();
+
+        newRow.innerHTML = `
+            <td class="select-row"><input type="checkbox" class="row-checkbox"></td>
+            <td><input type="text" name="date_of_arrival[]"></td>
+            <td><input type="text" name="date_of_filed[]"></td>
+            <td><input type="text" name="consignee[]"></td>
+            <td><input type="text" name="broker[]"></td>
+            <td><input type="text" name="entry_no[]"></td>
+            <td>
+                <select name="volume[]" class="volume-dropdown" style="font-family: Arial, sans-serif;">
+                    <option value="" disabled selected>--</option>
+                    ${[...Array(40).keys()].map(i => `<option value="${i + 1}x40">${i + 1}x40</option>`).join('')}
+                    ${[...Array(40).keys()].map(i => `<option value="${i + 1}x20">${i + 1}x20</option>`).join('')}
+                </select>
+            </td>
+            <td><input type="text" name="stc[]"></td>
+            <td><input type="text" name="bill_of_lading[]"></td>
+            <td><input type="text" name="container_no[]"></td>
+            <td><input type="text" name="owner[]"></td>
+            <td>
+                <select name="selectivity[]" class="selectivity-dropdown">
+                    <option value="" disabled selected>--</option>
+                    <option value="red">red</option>
+                    <option value="orange">orange</option>
+                    <option value="yellow">yellow</option>
+                </select>
+            </td>
+            <td><input type="text" name="taxes[]"></td>
+            <td><input type="text" name="upgraded_taxes[]"></td>
+            <td>
+                <select name="status[]" class="status-dropdown">
+                    <option value="" disabled selected>--</option>
+                    <option value="assessed">assessed</option>
+                    <option value="paid">paid</option>
+                    <option value="registered">registered</option>
+                    <option value="released">released</option>
+                    <option value="selected">selected</option>
+                </select>
+            </td>
+            <td><input type="text" name="thc[]"></td>
+            <td><input type="text" name="condep[]"></td>
+            <td><input type="text" name="demurrage[]"></td>
+            <td><input type="text" name="detention[]"></td>
+            <td><input type="text" name="do_status[]"></td>
+            <td><input type="text" name="do_validity[]"></td>
+            <td><input type="text" name="arrastre[]" class="arrastre-field" readonly></td>
+            <td><input type="text" name="wharfage[]" readonly></td>
+            <td><input type="text" name="spotcheck[]" readonly></td>
+            <td><input type="text" name="total_storage[]"></td>
+        `;
+
+        const volumeDropdown = newRow.querySelector('.volume-dropdown');
+        const selectivityDropdown = newRow.querySelector('.selectivity-dropdown');
+        const statusDropdown = newRow.querySelector('.status-dropdown');
+        const entryNoInput = newRow.querySelector('input[name="entry_no[]"]');
+        const billInput = newRow.querySelector('input[name="bill_of_lading[]"]');
+
+        entryNoInput.addEventListener('input', () => checkDuplicateLive("entry_no[]", "Duplicate Entry No."));
+        billInput.addEventListener('input', () => checkDuplicateLive("bill_of_lading[]", "Duplicate Bill of Lading."));
+
+        volumeDropdown.addEventListener('change', () => calculateCharges(volumeDropdown));
+        selectivityDropdown.addEventListener('change', () => {
+            updateSelectivityColor(selectivityDropdown);
+            calculateCharges(volumeDropdown);
+        });
+        statusDropdown.addEventListener('change', () => updateStatusColor(statusDropdown));
+    }
+
+    function deleteSelectedRows() {
+        const table = document.querySelector('table');
+        const checkboxes = table.querySelectorAll('tbody .row-checkbox:checked');
+        checkboxes.forEach(checkbox => {
+            const row = checkbox.closest('tr');
+            row.remove();
+        });
+        updateTotals();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('.status-dropdown').forEach(updateStatusColor);
+        document.querySelectorAll('.selectivity-dropdown').forEach(select => {
+            updateSelectivityColor(select);
+            const volumeSelect = select.closest('tr').querySelector('.volume-dropdown');
+            calculateCharges(volumeSelect);
+
+            select.addEventListener('change', () => {
+                updateSelectivityColor(select);
+                calculateCharges(volumeSelect);
+            });
+        });
+
+        document.querySelectorAll('.volume-dropdown').forEach(select => {
+            select.addEventListener('change', () => calculateCharges(select));
+        });
+
+        document.querySelectorAll('.status-dropdown').forEach(select => {
+            select.addEventListener('change', () => updateStatusColor(select));
+        });
+
+        setupLiveDuplicateChecks();
     });
-
-    document.querySelectorAll('input[name="bill_of_lading[]"]').forEach(input => {
-        input.addEventListener('input', () => checkDuplicateLive("bill_of_lading[]", "Duplicate Bill of Lading."));
-    });
-}
-
-// Run on initial page load
-document.addEventListener("DOMContentLoaded", () => {
-    checkDuplicateOnBlur("entry_no[]", "Duplicate Entry No. detected!");
-    checkDuplicateOnBlur("bill_of_lading[]", "Duplicate Bill of Lading detected!");
-});
-
-
-
-function deleteSelectedRows() {
-    const table = document.querySelector('table');
-    const checkboxes = table.querySelectorAll('tbody .row-checkbox:checked');
-    checkboxes.forEach(checkbox => {
-        const row = checkbox.closest('tr');
-        row.remove();
-    });
-    updateTotals();
-}
 </script>
+
 {% endblock content %}
